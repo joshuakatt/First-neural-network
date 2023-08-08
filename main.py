@@ -39,6 +39,7 @@ def relu(Z):
     return A, cache
 
 def softmax(Z):
+
     """
     Implement the softmax function. This will be used in the output layer.
 
@@ -55,6 +56,26 @@ def softmax(Z):
     cache = Z
     
     return A, cache
+
+def initialize_params(layer_dims):
+    """
+    Arguments:
+    layer_dims -- python array (list) containing the dimensions of each layer in our network
+    
+    Returns:
+    parameters -- python dictionary containing your parameters "W1", "b1", ..., "WL", "bL":
+                    Wl -- weight matrix of shape (layer_dims[l], layer_dims[l-1])
+                    bl -- bias vector of shape (layer_dims[l], 1)
+    """
+    
+    parameters = {}
+    L = len(layer_dims) # number of layers in the network
+
+    for l in range(1, L):
+        parameters['W' + str(l)] = np.random.randn(layer_dims[l], layer_dims[l-1]) * 0.01
+        parameters['b' + str(l)] = np.zeros((layer_dims[l], 1))
+        
+    return parameters
 
 def linear_forward(L_prev, W, b):
     """
@@ -75,18 +96,26 @@ def linear_forward(L_prev, W, b):
     
     return Z, cache
 
-def forward_prop_hidden(L_prev, W, b, activation):
+def forward_prop_hidden(L_prev, W, b):
     Z, linear_cache = linear_forward(L_prev, W, b)
     A, activation_cache = relu(Z)
     cache = (linear_cache, activation_cache)
     return A, cache
 
-def forward_prop_output(L_prev, W, b, activation):
+def forward_prop_output(L_prev, W, b):
     Z, linear_cache = linear_forward(L_prev, W, b)
     A, activation_cache = softmax(Z)
     cache = (linear_cache, activation_cache)
     return A, cache
 
 
+
 def forward():
+    training_data = images[0:10000].T
+    layer_dims = [784, 50, 10]
+    parameters = initialize_params(layer_dims)
+    A1, cache_1 = forward_prop_hidden(training_data, parameters['W1'], parameters['b1'])
+    A2, chache_2 = forward_prop_hidden(A1, parameters['W2'], parameters['b2'])
+    print(A2)
     
+forward()
